@@ -153,6 +153,7 @@ object GitDiffParser extends RegexParsers {
   def num: Parser[Int] = """\d+""".r ^^ { _.toInt }
 
   def parse(diff: String): Either[ParsingFailure, List[Diff]] = {
+    println(diff)
     parseAll(allDiffs, stripNelCharacters(diff)) match {
       case Success(s, _) => Right(s)
       case NoSuccess(msg, _) => Left(ParsingFailure(msg))

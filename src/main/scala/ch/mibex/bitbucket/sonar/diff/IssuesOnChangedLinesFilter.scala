@@ -4,12 +4,14 @@ import ch.mibex.bitbucket.sonar.client.{BitbucketClient, PullRequest}
 import ch.mibex.bitbucket.sonar.diff.GitDiffParser.{BinaryDiff, Diff, GitDiff}
 import ch.mibex.bitbucket.sonar.{GitBaseDirResolver, SonarBBPlugin}
 import org.sonar.api.batch.postjob.issue.PostJobIssue
-import org.sonar.api.batch.{ScannerSide, InstantiationStrategy}
+import org.sonar.api.batch.{InstantiationStrategy, ScannerSide}
+import org.sonar.api.utils.log.Loggers
 
 @ScannerSide
 @InstantiationStrategy(InstantiationStrategy.PER_BATCH)
 class IssuesOnChangedLinesFilter(bitbucketClient: BitbucketClient,
                                  gitBaseDirResolver: GitBaseDirResolver) {
+  private val logger = Loggers.get(getClass)
 
   def filter(pullRequest: PullRequest, newIssues: Seq[PostJobIssue]): Seq[PostJobIssue] = {
     val pullRequestDiff = bitbucketClient.getPullRequestDiff(pullRequest)
@@ -51,7 +53,7 @@ class IssuesOnChangedLinesFilter(bitbucketClient: BitbucketClient,
 
   private def parseOrFail(diff: String) = GitDiffParser.parse(diff) match {
     case Left(parsingFailure) =>
-      throw new RuntimeException(s"${SonarBBPlugin.PluginLogPrefix} Failed to parse diff: ${parsingFailure.reason}")
+      throw new RuntimeException(s"${SonarBBPlugin.PluginLogPrefix} Failed to parse diff: ${parsingFailure.reason} and ........vlaue : ${diff}")
     case Right(gitDiffs) => gitDiffs
   }
 

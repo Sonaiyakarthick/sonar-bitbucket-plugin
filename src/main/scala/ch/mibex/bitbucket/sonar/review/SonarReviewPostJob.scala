@@ -23,6 +23,11 @@ class SonarReviewPostJob(
   override def execute(context: PostJobContext): Unit = {
     getPullRequestsToAnalyze foreach { pullRequest =>
       logger.info(LogUtils.f(s"Plug-in is active and will analyze pull request #${pullRequest.id}..."))
+      logger.info(LogUtils.f(s"context ${context.analysisMode()}....."))
+
+      logger.info(LogUtils.f(s"context ${context.config()}....."))
+      logger.info(LogUtils.f(s"context ${context.issues()}....."))
+      logger.info(LogUtils.f(s"context ${context.resolvedIssues()}....."))
       handlePullRequest(context, pullRequest)
     }
   }
